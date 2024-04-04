@@ -187,7 +187,7 @@ Use the component in your React application
 import { render } from 'react-dom';
 import LabelStudioReact from './components/LabelStudio';
 
-const labelinConfig = `
+const labelingConfig = `
   <View>
     <Image name="img" value="$image"></Image>
     <RectangleLabels name="tag" toName="img">
@@ -210,7 +210,7 @@ const App = () => {
   return (
     <div class="app-root">
       <LabelStudioReact
-        config={labelinConfig}
+        config={labelingConfig}
         task={task}
         interfaces={[
           "panel",

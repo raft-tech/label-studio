@@ -35,7 +35,7 @@ const browserHistory = createBrowserHistory({
 
 window.LSH = browserHistory;
 
-initSentry(browserHistory);
+// initSentry(browserHistory);
 
 const App = ({ content }) => {
   const libraries = {

@@ -16,7 +16,7 @@
     border-radius 3px
     align-items center
     box-sizing border-box
-    color rgba(0,0,0,0.6)
+    color rgb(116, 124, 139)
     font-size 16px
     font-family Roboto
     white-space nowrap
@@ -36,20 +36,24 @@
         color #DD0000
 
     &:not(&_look_danger):hover
-      color #000
+      color #FAFAFA
 
     &:not(&_active):hover
       background-color rgba(0, 0, 0, 0.04)
 
     &_active
-      color #000
+      color #FAFAFA
       background-color rgba(0, 0, 0, 0.08)
 
     &_active:not(.sidebar__pin)
       pointer-events none
 
     &:hover &-icon, &_active &-icon
+      filter invert(1)
       opacity 1
+
+    &-icon
+      filter invert(1)
 
   &__spacer
     flex 1

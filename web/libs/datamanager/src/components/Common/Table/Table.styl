@@ -42,7 +42,7 @@
   display flex
   flex-direction column
   overflow auto
-  background-color #fff
+  background-color #191919
 
   &__select-all
     &::after
@@ -83,7 +83,7 @@
     min-width fit-content
     position relative
     cursor pointer
-    background-color #fff
+    color #fff
 
     &_disabled,
     &_loading
@@ -91,13 +91,13 @@
       pointer-events none
 
     &_even:not(&_selected)
-      background-color #fafafa
+      background-color #0F101A
 
     &_selected
-      background-color #e3f1ff
+      background-color #1D2032
 
     &:not(&_selected):hover
-      background-color #f3f9ff
+      background-color #1D2032
 
     &_highlighted:not(&_selected)::after
       top 0

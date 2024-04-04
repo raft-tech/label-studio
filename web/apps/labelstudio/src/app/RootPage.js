@@ -2,7 +2,7 @@ import React from 'react';
 import { Menubar } from '../components/Menubar/Menubar';
 import { ProjectRoutes } from '../routes/ProjectRoutes';
 
-export const RootPage = ({content}) => {
+export const RootPage = ({ content }) => {
   const pinned = localStorage.getItem('sidebar-pinned') === 'true';
   const opened = pinned && localStorage.getItem('sidebar-opened') === 'true';
 
