@@ -444,7 +444,7 @@
   display: none;
   position: absolute;
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: #222;
   box-shadow: 0 5px 20px rgba(0,0,0,0.2);
   will-change: transform, opacity;
 }
@@ -923,9 +923,9 @@
   position: relative;
   align-items: center;
   border-radius: 100%;
-  color: rgba(0,0,0,0.8);
+  color: #fff;
   justify-content: center;
-  background: #fafafa;
+  background: #444;
   box-shadow: inset 0px 0px 0px 1px rgba(0,0,0,0.1);
 }
 .ls-userpic img {
@@ -1118,7 +1118,7 @@
   flex-direction: column;
   margin-left: 0;
   height: 100%;
-  background-color: #fff;
+  background-color: #222;
   transition: margin var(--menu-animation-duration) var(--menu-animation-curve);
   will-change: margin-left;
 }
@@ -1522,14 +1522,15 @@
 .ls-textarea {
   height: 40px;
   min-height: 40px;
-  background: #fafafa;
   font-size: 16px;
   line-height: 22px;
-  border: 1px solid rgba(0,0,0,0.15);
-  box-sizing: border-box;
   border-radius: 5px;
   padding: 0 16px;
   transition: box-shadow 80ms ease;
+  box-sizing: border-box;
+  background: none;
+  border: 1px solid #555;
+  color: #fff;
 }
 .ls-input_ghost,
 .ls-select_ghost,

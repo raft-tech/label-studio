@@ -1,7 +1,7 @@
 /* Account page */
 
 body {
-  --border-color: rgba(0, 0, 0, 0.15);
+  --border-color: #555;
   --color-error: #d00;
 }
 .account-page {
@@ -73,7 +73,7 @@ body {
   align-items: center;
 }
 .account-page footer p {
-  color: rgba(0, 0, 0, 0.2);
+  color: #555;
   margin: 0;
 }
 

@@ -1,5 +1,5 @@
 body {
-  --border-color: rgba(0, 0, 0, 0.15);
+  --border-color: #555;
   --color-error: #d00;
 }
 
@@ -64,7 +64,7 @@ textarea {
 
 input[type=text][disabled] {
   background: rgba(0, 0, 0, 0.03);
-  color: rgba(0, 0, 0, 0.4)
+  color: #555;
 }
 
 a.button,
@@ -155,13 +155,13 @@ ul.toggle li.active {
   align-items: center;
   border-radius: 50%;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.04);
+  background: #555;
   box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.1);
 
   font-size: 12px;
   font-weight: bold;
   font-family: Roboto;
-  color: rgba(0, 0, 0, 0.4);
+  color: #aaa;
 }
 
 .userpic--medium {

@@ -3,7 +3,7 @@ html {
 }
 
 body {
-    color: #3a3a3a;
+    color: #AAA;
     overflow-x: unset !important;
 }
 
@@ -102,7 +102,7 @@ pre {
     min-height: 100vh;
     min-width: 840px;
     flex-direction: column;
-    background: #FCFCFC !important;
+    background: #222 !important;
 }
 
 .pusher > .main {
@@ -115,7 +115,7 @@ pre {
 }
 
 main.main {
-    background: #FCFCFC !important;
+    background: #222 !important;
     padding: 2em 4rem 2rem 2rem;
 }
 
