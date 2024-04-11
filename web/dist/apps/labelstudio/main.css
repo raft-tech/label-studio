@@ -349,7 +349,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: #222;
   border-radius: 5px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   display: flex;
@@ -1341,7 +1341,7 @@
 }
 .ls-toggle-items__item {
   cursor: pointer;
-  color: rgba(0,0,0,0.6);
+  color: #aaa;
   border-radius: 4px;
   padding: 2px 16px;
   flex-grow: 1;
@@ -1392,7 +1392,7 @@
   margin-top: 5px;
   font-size: 14px;
   line-height: 22px;
-  color: rgba(0,0,0,0.4);
+  color: #777;
 }
 .ls-label__description a {
   color: #096dd9;
@@ -1567,6 +1567,7 @@ input.ls-input[type=radio] {
   transition: box-shadow 80ms ease;
   font-size: inherit;
   border-right: 10px solid transparent;
+  color: #fff;
 }
 .ls-select_ghost {
   margin-left: -10px;
@@ -1840,7 +1841,6 @@ input.ls-input[type=radio] {
 
 .ls-heidy-tip__content {
   padding: 16px;
-  color: #000;
   border: 1px solid #bfbfbf;
   font-family: Roboto;
   font-size: 14px;
@@ -2437,7 +2437,7 @@ li.CodeMirror-hint-active {
   flex-direction: column;
   padding: 16px 11px 16px 20px;
   overflow-y: scroll;
-  background-color: #fff;
+  background-color: #222;
 }
 .ls-wizard .ls-configure__container::-webkit-scrollbar {
   width: 5px;
@@ -2454,6 +2454,7 @@ li.CodeMirror-hint-active {
   padding: 16px 8px 16px 32px;
 }
 .ls-templates-list__sidebar h3:not(:first-child) {
+  color: #fff;
   margin-top: 2em;
 }
 .ls-templates-list__sidebar .ls-templates-list__custom-template {
@@ -2529,6 +2530,7 @@ li.CodeMirror-hint-active {
   opacity: 0.9;
 }
 .ls-templates-list__template h3 {
+  color: #fff;
   margin: 0;
   padding: 12px;
   font-size: 14px;
@@ -2592,6 +2594,11 @@ li.CodeMirror-hint-active {
 .ls-wizard button,
 .ls-wizard input[type=button] {
   line-height: 1;
+  color: #9a76ff !important;
+  border: #9a76ff 1px solid;
+  background: none;
+  box-shadow: none;
+  box-shadow: inset 0px -1px 0px rgba(0,0,0,0.1);
 }
 .ls-configure__container > header {
   display: flex;
@@ -2603,6 +2610,7 @@ li.CodeMirror-hint-active {
   display: flex;
   flex: 1;
   overflow-y: auto;
+  color: #aaa;
 }
 .ls-configure__editor::-webkit-scrollbar {
   width: 6px;
@@ -2613,6 +2621,7 @@ li.CodeMirror-hint-active {
   background-color: #bfbfbf;
 }
 .ls-configure__tags-link {
+  color: #aaa;
   margin: 0;
   line-height: 21px;
   margin-top: -6px;
@@ -2630,6 +2639,7 @@ li.CodeMirror-hint-active {
 }
 .ls-wizard .ls-configure__code textarea .CodeMirror,
 .ls-wizard .ls-configure__code .react-codemirror2 .CodeMirror {
+  background-color: #bbb;
   height: 100%;
 }
 .ls-wizard .ls-configure__code,
@@ -2644,6 +2654,7 @@ li.CodeMirror-hint-active {
   margin-bottom: 16px;
 }
 .ls-wizard .ls-configure__object h4 {
+  color: #fff;
   margin-bottom: 8px;
 }
 .ls-wizard .ls-configure__object > p {
@@ -2690,6 +2701,7 @@ li.CodeMirror-hint-active {
   font: inherit;
 }
 .ls-wizard .ls-configure__visual h4 {
+  color: #fff;
   margin: 0;
   font-weight: 500;
 }
@@ -2703,6 +2715,7 @@ li.CodeMirror-hint-active {
 }
 .ls-wizard .ls-configure__current-labels h3 {
   font-size: 16px;
+  color: #fff;
   margin: 0 32px 7px;
 }
 .ls-wizard .ls-configure__labels ul {
@@ -2834,49 +2847,10 @@ li.CodeMirror-hint-active {
   padding: 16px 16px 0;
   overflow-y: auto;
   border-left: 1px solid rgba(0,0,0,0.1);
-  background-color: #fafafa;
+  background-color: #222;
   display: flex;
   flex-direction: column;
-}
-.ls-wizard .ls-configure__preview::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-  background-color: #f5f5f5;
-}
-.ls-wizard .ls-configure__preview::-webkit-scrollbar-thumb {
-  background-color: #bfbfbf;
-}
-.ls-wizard .ls-configure__preview h3 {
-  margin: 8px 0 16px;
-  font-size: 16px;
-}
-.ls-wizard .ls-configure__preview iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.ls-wizard .ls-configure__preview-ui {
-  flex: 1;
-  min-height: 0;
-}
-.ls-wizard .ls-configure__preview-error {
-  color: #771b04;
-  border: 1px solid #e68a6e;
-  background-color: #ffc1ae;
-  padding: 10px 15px;
-  border-radius: 3px;
-  margin-bottom: 16px;
-  white-space: pre-line;
-}
-.ls-wizard .ls-configure__preview-error h2 {
-  font-size: 16px;
-}
-.ls-wizard .ls-configure__preview .ls-editor > .ls-common {
-  flex: 1;
-  max-width: 100%;
-}
-.ls-wizard .ls-configure__preview .lsf-main-view__annotation {
-  padding: 0;
+  border: 1px solid;
 }
 div[class^=App_menu]>div {
   width: 100%;
@@ -3497,7 +3471,7 @@ body {
 }
 .ls-webhook-wrap__footer-text {
   width: 680px;
-  color: rgba(0,0,0,0.6);
+  color: #aaa;
 }
 .ls-webhook-wrap__footer-text p {
   margin: 0;
@@ -3766,7 +3740,7 @@ body {
 }
 .ls-workspace-placeholder__title {
   font-size: 16px;
-  color: #3a3a3a;
+  color: #aaa;
   font-weight: 500;
 }
 .ls-settings-caption {
@@ -3845,7 +3819,7 @@ body {
 
 .ls-description {
   font-size: 16px;
-  color: #000;
+  color: #aaa;
   opacity: 0.6;
 }
 .ls-description_size_small {
@@ -4213,6 +4187,7 @@ body {
   font-size: 16px;
   opacity: 0.6;
   margin-bottom: 32px;
+  color: #aaa;
 }
 .ls-storage-settings__controls {
   display: flex;

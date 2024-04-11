@@ -37,7 +37,7 @@ export const AnnotationSettings = () => {
             <div>
               <Toggle label="Show before labeling" name="show_instruction" />
             </div>
-            <div style={{ color: 'rgba(0,0,0,0.4)' }}>
+            <div style={{ color: '#AAA' }}>
               <p>Write instructions to help users complete labeling tasks.</p>
               <p>
                 The instruction field supports HTML markup and it allows use of

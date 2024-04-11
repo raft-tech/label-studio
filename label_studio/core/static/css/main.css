@@ -3,7 +3,7 @@ html {
 }
 
 body {
-    color: #AAA;
+    color: #AAA !important;
     overflow-x: unset !important;
 }
 
