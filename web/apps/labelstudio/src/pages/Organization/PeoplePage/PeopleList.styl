@@ -29,14 +29,14 @@
     height 48px
     padding 0 10px
     border none
-    color black
+    color #fff
     display flex
     position relative
     align-items center
     font 16px/normal 'Roboto'
 
     &.last-activity
-      color rgba(#000, 0.4)
+      color #aaa
 
   &__column
     font-weight 500
@@ -66,7 +66,7 @@
 
     &_active
       position relative
-      background-color #fff
+      border 1px solid #fff
 
       &::before,
       &::after
@@ -79,7 +79,6 @@
 
       &::after
         z-index 1
-        background-color #fff
         width calc(100% + 22px)
         box-shadow inset 2px 0 0 #000, 1px 0 0 1px rgba(0, 0, 0, 0.15) inset
 

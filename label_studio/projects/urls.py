@@ -9,9 +9,12 @@ app_name = 'projects'
 # reverse for projects:name
 _urlpatterns = [
     path('', views.project_list, name='project-index'),
-    path('<int:pk>/settings/', views.project_settings, name='project-settings', kwargs={'sub_path': ''}),
-    path('<int:pk>/settings/<sub_path>', views.project_settings, name='project-settings-anything'),
-    path('upload-example/', views.upload_example_using_config, name='project-upload-example-using-config'),
+    path('<int:pk>/settings/', views.project_settings,
+         name='project-settings', kwargs={'sub_path': ''}),
+    path('<int:pk>/settings/<sub_path>', views.project_settings,
+         name='project-settings-anything'),
+    path('upload-example/', views.upload_example_using_config,
+         name='project-upload-example-using-config'),
 ]
 
 # reverse for projects:api:name
@@ -22,29 +25,41 @@ _api_urlpatterns = [
     # Get next task
     path('<int:pk>/next/', api.ProjectNextTaskAPI.as_view(), name='project-next'),
     # Label stream history
-    path('<int:pk>/label-stream-history/', api.LabelStreamHistoryAPI.as_view(), name='label-stream-history'),
+    path('<int:pk>/label-stream-history/',
+         api.LabelStreamHistoryAPI.as_view(), name='label-stream-history'),
     # Validate label config in general
-    path('validate/', api.LabelConfigValidateAPI.as_view(), name='label-config-validate'),
+    path('validate/', api.LabelConfigValidateAPI.as_view(),
+         name='label-config-validate'),
     # Validate label config for project
-    path('<int:pk>/validate/', api.ProjectLabelConfigValidateAPI.as_view(), name='project-label-config-validate'),
+    path('<int:pk>/validate/', api.ProjectLabelConfigValidateAPI.as_view(),
+         name='project-label-config-validate'),
     # Project summary
-    path('<int:pk>/summary/', api.ProjectSummaryAPI.as_view(), name='project-summary'),
+    path('<int:pk>/summary/', api.ProjectSummaryAPI.as_view(),
+         name='project-summary'),
     # Project summary
     path(
         '<int:pk>/summary/reset/',
         api.ProjectSummaryResetAPI.as_view(),
         name='project-summary-reset',
     ),
+    path('<int:project_id>/agreement/',
+         api.ProjectAgreementAPI.as_view(), name='project-agreement'),
+
     # Project import
-    path('<int:pk>/imports/<int:import_pk>/', api.ProjectImportAPI.as_view(), name='project-imports'),
+    path('<int:pk>/imports/<int:import_pk>/',
+         api.ProjectImportAPI.as_view(), name='project-imports'),
     # Project reimport
-    path('<int:pk>/reimports/<int:reimport_pk>/', api.ProjectReimportAPI.as_view(), name='project-reimports'),
+    path('<int:pk>/reimports/<int:reimport_pk>/',
+         api.ProjectReimportAPI.as_view(), name='project-reimports'),
     # Tasks list for the project: get and destroy
-    path('<int:pk>/tasks/', api.ProjectTaskListAPI.as_view(), name='project-tasks-list'),
+    path('<int:pk>/tasks/', api.ProjectTaskListAPI.as_view(),
+         name='project-tasks-list'),
     # Generate sample task for this project
-    path('<int:pk>/sample-task/', api.ProjectSampleTask.as_view(), name='project-sample-task'),
+    path('<int:pk>/sample-task/', api.ProjectSampleTask.as_view(),
+         name='project-sample-task'),
     # List available model versions
-    path('<int:pk>/model-versions/', api.ProjectModelVersions.as_view(), name='project-model-versions'),
+    path('<int:pk>/model-versions/', api.ProjectModelVersions.as_view(),
+         name='project-model-versions'),
 ]
 
 _api_urlpatterns_templates = [
@@ -55,5 +70,6 @@ _api_urlpatterns_templates = [
 urlpatterns = [
     path('projects/', include(_urlpatterns)),
     path('api/projects/', include((_api_urlpatterns, app_name), namespace='api')),
-    path('api/templates/', include((_api_urlpatterns_templates, app_name), namespace='api-templates')),
+    path('api/templates/', include((_api_urlpatterns_templates,
+         app_name), namespace='api-templates')),
 ]

@@ -3,7 +3,7 @@
 import logging
 import os
 import pathlib
-
+import requests
 import drf_yasg.openapi as openapi
 from core.filters import ListFilter
 from core.label_config import config_essential_data_has_changed
@@ -78,7 +78,8 @@ _result_schema = openapi.Schema(
             type=openapi.TYPE_OBJECT,
         ),
     },
-    example={'from_name': 'image_class', 'to_name': 'image', 'value': {'labels': ['Cat']}},
+    example={'from_name': 'image_class',
+             'to_name': 'image', 'value': {'labels': ['Cat']}},
 )
 
 _task_data_schema = openapi.Schema(
@@ -155,7 +156,8 @@ class ProjectListAPI(generics.ListCreateAPIView):
             F('pinned_at').desc(nulls_last=True), '-created_at'
         )
         if filter in ['pinned_only', 'exclude_pinned']:
-            projects = projects.filter(pinned_at__isnull=filter == 'exclude_pinned')
+            projects = projects.filter(
+                pinned_at__isnull=filter == 'exclude_pinned')
         return ProjectManager.with_counts_annotate(projects, fields=fields).prefetch_related('members', 'created_by')
 
     def get_serializer_context(self):
@@ -169,9 +171,11 @@ class ProjectListAPI(generics.ListCreateAPIView):
         except IntegrityError as e:
             if str(e) == 'UNIQUE constraint failed: project.title, project.created_by_id':
                 raise ProjectExistException(
-                    'Project with the same name already exists: {}'.format(ser.validated_data.get('title', ''))
+                    'Project with the same name already exists: {}'.format(
+                        ser.validated_data.get('title', ''))
                 )
-            raise LabelStudioDatabaseException('Database error during project creation. Try again.')
+            raise LabelStudioDatabaseException(
+                'Database error during project creation. Try again.')
 
     def get(self, request, *args, **kwargs):
         return super(ProjectListAPI, self).get(request, *args, **kwargs)
@@ -243,7 +247,8 @@ class ProjectAPI(generics.RetrieveUpdateDestroyAPIView):
         # config changes can break view, so we need to reset them
         if label_config:
             try:
-                _has_changes = config_essential_data_has_changed(label_config, project.label_config)
+                _has_changes = config_essential_data_has_changed(
+                    label_config, project.label_config)
             except KeyError:
                 pass
 
@@ -264,6 +269,29 @@ class ProjectAPI(generics.RetrieveUpdateDestroyAPIView):
     name='get',
     decorator=swagger_auto_schema(
         tags=['Projects'],
+        operation_summary='Get project agreement',
+        operation_description='Get a project agreement by specified project ID.',
+    ),
+)
+class ProjectAgreementAPI(generics.RetrieveAPIView):
+    parser_classes = (JSONParser, FormParser, MultiPartParser)
+    queryset = Project.objects.all()
+
+    def get_queryset(self):
+        return Project.objects.filter(id=self.kwargs['project_id'])
+
+    def get(self, request, *args, **kwargs):
+        project_id = self.kwargs['project_id']
+        response = requests.get(
+            f'http://172.10.3.147:9080/calculate-agreement?project_id={project_id}')
+        response_data = response.json()
+        return Response({'score': response_data.get('score', 0)})
+
+
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        tags=['Projects'],
         operation_summary='Get next task to label',
         operation_description="""
     Get the next task for labeling. If you enable Machine Learning in
@@ -277,7 +305,8 @@ class ProjectAPI(generics.RetrieveUpdateDestroyAPIView):
 class ProjectNextTaskAPI(generics.RetrieveAPIView):
 
     permission_required = all_permissions.tasks_view
-    serializer_class = TaskWithAnnotationsAndPredictionsAndDraftsSerializer  # using it for swagger API docs
+    # using it for swagger API docs
+    serializer_class = TaskWithAnnotationsAndPredictionsAndDraftsSerializer
     queryset = Project.objects.all()
     swagger_schema = None   # this endpoint doesn't need to be in swagger API docs
 
@@ -286,7 +315,8 @@ class ProjectNextTaskAPI(generics.RetrieveAPIView):
         dm_queue = filters_ordering_selected_items_exist(request.data)
         prepared_tasks = get_prepared_queryset(request, project)
 
-        next_task, queue_info = get_next_task(request.user, prepared_tasks, project, dm_queue)
+        next_task, queue_info = get_next_task(
+            request.user, prepared_tasks, project, dm_queue)
 
         if next_task is None:
             raise NotFound(
@@ -295,7 +325,8 @@ class ProjectNextTaskAPI(generics.RetrieveAPIView):
             )
 
         # serialize task
-        context = {'request': request, 'project': project, 'resolve_uri': True, 'annotations': False}
+        context = {'request': request, 'project': project,
+                   'resolve_uri': True, 'annotations': False}
         serializer = NextTaskSerializer(next_task, context=context)
         response = serializer.data
 
@@ -381,7 +412,8 @@ class ProjectLabelConfigValidateAPI(generics.RetrieveAPIView):
             raise RestValidationError('Label config is not set or is empty')
 
         # check new config includes meaningful changes
-        has_changed = config_essential_data_has_changed(label_config, project.label_config)
+        has_changed = config_essential_data_has_changed(
+            label_config, project.label_config)
         project.validate_config(label_config, strict=True)
         return Response({'config_essential_data_has_changed': has_changed}, status=status.HTTP_200_OK)
 
@@ -536,7 +568,8 @@ class ProjectTaskListAPI(GetParentObjectMixin, generics.ListCreateAPIView, gener
             return TaskSerializer
 
     def filter_queryset(self, queryset):
-        project = generics.get_object_or_404(Project.objects.for_user(self.request.user), pk=self.kwargs.get('pk', 0))
+        project = generics.get_object_or_404(Project.objects.for_user(
+            self.request.user), pk=self.kwargs.get('pk', 0))
         # ordering is deprecated here
         tasks = Task.objects.filter(project=project).order_by('-updated_at')
         page = paginator(tasks, self.request)
@@ -546,11 +579,13 @@ class ProjectTaskListAPI(GetParentObjectMixin, generics.ListCreateAPIView, gener
             raise Http404
 
     def delete(self, request, *args, **kwargs):
-        project = generics.get_object_or_404(Project.objects.for_user(self.request.user), pk=self.kwargs['pk'])
+        project = generics.get_object_or_404(
+            Project.objects.for_user(self.request.user), pk=self.kwargs['pk'])
         task_ids = list(Task.objects.filter(project=project).values('id'))
         Task.delete_tasks_without_signals(Task.objects.filter(project=project))
         project.summary.reset()
-        emit_webhooks_for_instance(request.user.active_organization, None, WebhookAction.TASKS_DELETED, task_ids)
+        emit_webhooks_for_instance(
+            request.user.active_organization, None, WebhookAction.TASKS_DELETED, task_ids)
         return Response(data={'tasks': task_ids}, status=204)
 
     def get(self, *args, **kwargs):
@@ -569,7 +604,8 @@ class ProjectTaskListAPI(GetParentObjectMixin, generics.ListCreateAPIView, gener
         project = self.get_parent_object()
         instance = serializer.save(project=project)
         emit_webhooks_for_instance(
-            self.request.user.active_organization, project, WebhookAction.TASKS_CREATED, [instance]
+            self.request.user.active_organization, project, WebhookAction.TASKS_CREATED, [
+                instance]
         )
         return instance
 
@@ -591,7 +627,8 @@ class TemplateListAPI(generics.ListAPIView):
                 # if hostname set manually, create full image urls
                 config['image'] = settings.HOSTNAME + config['image']
             configs.append(config)
-        template_groups_file = find_file(os.path.join('annotation_templates', 'groups.txt'))
+        template_groups_file = find_file(
+            os.path.join('annotation_templates', 'groups.txt'))
         with open(template_groups_file, encoding='utf-8') as f:
             groups = f.read().splitlines()
         logger.debug(f'{len(configs)} templates found.')
@@ -624,9 +661,11 @@ class ProjectModelVersions(generics.RetrieveAPIView):
         # TODO make sure "extended" is the right word and is
         # consistent with other APIs we've got
         extended = self.request.query_params.get('extended', False)
-        include_live_models = self.request.query_params.get('include_live_models', False)
+        include_live_models = self.request.query_params.get(
+            'include_live_models', False)
         project = self.get_object()
-        data = project.get_model_versions(with_counters=True, extended=extended)
+        data = project.get_model_versions(
+            with_counters=True, extended=extended)
 
         if extended:
             serializer_models = None

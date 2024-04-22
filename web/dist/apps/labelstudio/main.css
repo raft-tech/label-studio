@@ -676,7 +676,7 @@
 .ls-card {
   border-radius: 5px;
   background-color: rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.05);
+  border: 1px solid #aaa;
 }
 .ls-card__header {
   display: flex;
@@ -1567,7 +1567,7 @@ input.ls-input[type=radio] {
   transition: box-shadow 80ms ease;
   font-size: inherit;
   border-right: 10px solid transparent;
-  color: #fff;
+  color: #aaa;
 }
 .ls-select_ghost {
   margin-left: -10px;
@@ -3239,11 +3239,10 @@ body {
   padding: 32px 40px 32px;
   position: sticky;
   bottom: -40px;
-  background-color: #fff;
   border-radius: 5px;
 }
 .ls-formats {
-  color: rgba(0,0,0,0.7);
+  color: #aaa;
   font-size: 16px;
 }
 .ls-formats__list {
@@ -3260,7 +3259,7 @@ body {
   pointer-events: all;
 }
 .ls-formats__item_active:hover:not(.ls-formats__item_selected) {
-  background-color: #efefef;
+  border: 1px solid #09f;
 }
 .ls-formats__item_selected {
   pointer-events: none;
@@ -4162,7 +4161,7 @@ body {
   display: grid;
   font-size: 16px;
   line-height: 22px;
-  color: rgba(0,0,0,0.6);
+  color: #aaa;
   grid-template-columns: 40% 60%;
   grid-row-gap: 12px;
 }
@@ -4470,7 +4469,7 @@ body {
   height: 48px;
   padding: 0 10px;
   border: none;
-  color: #000;
+  color: #fff;
   display: flex;
   position: relative;
   align-items: center;
@@ -4478,7 +4477,7 @@ body {
 }
 .ls-people-list__column.ls-last-activity,
 .ls-people-list__field.ls-last-activity {
-  color: rgba(0,0,0,0.4);
+  color: #aaa;
 }
 .ls-people-list__column {
   font-weight: 500;
@@ -4510,7 +4509,7 @@ body {
 }
 .ls-people-list__user_active {
   position: relative;
-  background-color: #fff;
+  border: 1px solid #fff;
 }
 .ls-people-list__user_active::before,
 .ls-people-list__user_active::after {
@@ -4523,7 +4522,6 @@ body {
 }
 .ls-people-list__user_active::after {
   z-index: 1;
-  background-color: #fff;
   width: calc(100% + 22px);
   box-shadow: inset 2px 0 0 #000, 1px 0 0 1px rgba(0,0,0,0.15) inset;
 }
@@ -4570,7 +4568,7 @@ body {
   -moz-column-gap: 16px;
        column-gap: 16px;
   line-height: 1.5;
-  color: rgba(0,0,0,0.6);
+  color: #aaa;
   margin-bottom: 16px;
   align-items: center;
 }

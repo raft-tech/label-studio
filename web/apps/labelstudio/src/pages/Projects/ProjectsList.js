@@ -1,8 +1,8 @@
 import chr from 'chroma-js';
 import { format } from 'date-fns';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LsBulb, LsCheck, LsEllipsis, LsMinus } from '../../assets/icons';
+import { LsBulb, LsCheck, LsEllipsis, LsMinus, Agreement } from '../../assets/icons';
 import { Button, Dropdown, Menu, Pagination, Userpic } from '../../components';
 import { Block, Elem } from '../../utils/bem';
 import { absoluteURL } from '../../utils/helpers';
@@ -43,8 +43,17 @@ export const EmptyProjectsList = ({ openModal }) => {
 };
 
 const ProjectCard = ({ project }) => {
+  const [projectAgreementPerecentage, setProjectAgreementPerecentage] = useState(0);
   const color = useMemo(() => {
     return project.color === '#FFFFFF' ? null : project.color;
+  }, [project]);
+
+
+  useEffect(() => {
+    fetch(`/api/projects/${project.id}/agreement`)
+      .then(response => response.json())
+      .then(result => setProjectAgreementPerecentage(result.score * 100))
+      .catch(error => console.error(error));
   }, [project]);
 
   const projectColors = useMemo(() => {
@@ -53,7 +62,7 @@ const ProjectCard = ({ project }) => {
       '--background-color': chr(color).alpha(0.2).css(),
     } : {};
   }, [color]);
-
+console.log(projectAgreementPerecentage)
   return (
     <Elem tag={NavLink} name="link" to={`/projects/${project.id}/data`} data-external>
       <Block name="project-card" mod={{ colored: !!color }} style={projectColors}>
@@ -83,6 +92,14 @@ const ProjectCard = ({ project }) => {
                 {project.finished_task_number} / {project.task_number}
               </Elem>
               <Elem name="detail">
+                <Elem name="detail-item" mod={{ type: "agreed" }}>
+                  <Elem tag={Agreement} name="icon" style={{
+                    maxHeight: '20px',
+                    maxWidth: '20px',
+                    filter: 'invert(1)',
+                  }}/>
+                  {projectAgreementPerecentage > 0 ? `${Math.round(projectAgreementPerecentage)}%` : "-"}
+                </Elem>
                 <Elem name="detail-item" mod={{ type: "completed" }}>
                   <Elem tag={LsCheck} name="icon"/>
                   {project.total_annotations_number}
