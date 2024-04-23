@@ -3732,6 +3732,9 @@ body {
 .ls-general-settings .ls-radio-group__buttons .ls-label__content {
   padding: 0 16px;
 }
+.ls-workspace-placeholder {
+  display: none;
+}
 .ls-workspace-placeholder__badge-wrapper {
   display: flex;
   margin-bottom: 8px;

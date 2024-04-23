@@ -56,7 +56,7 @@ export const GeneralSettings = () => {
               labelProps={{ large: true }}
               style={{ minHeight: 128 }}
             />
-            {isFF(FF_LSDV_E_297) && (
+            {/* {isFF(FF_LSDV_E_297) && (
               <Block name="workspace-placeholder">
                 <Elem name="badge-wrapper">
                   <Elem name="title">Workspace</Elem>
@@ -70,7 +70,7 @@ export const GeneralSettings = () => {
                 })}>Learn more</a>
                 </Caption>
               </Block>
-            )}
+            )} */}
             <RadioGroup name="color" label="Color" size="large" labelProps={{ size: "large" }}>
               {colors.map(color => (
                 <RadioGroup.Button key={color} value={color}>
@@ -88,7 +88,7 @@ export const GeneralSettings = () => {
                   description={description}
                 />
               ))}
-              {isFF(FF_LSDV_E_297) && (
+              {/* {isFF(FF_LSDV_E_297) && (
                 <RadioGroup.Button
                   key="uncertainty-sampling"
                   value=""
@@ -103,7 +103,7 @@ export const GeneralSettings = () => {
                     </>
                   )}
                 />
-              )}
+              )} */}
             </RadioGroup>
           </Form.Row>
 
