@@ -7,9 +7,26 @@ config: |
   <View>
     <Image name="image" value="$image"/>
     <Choices name="choice" toName="image">
-      <Choice value="Adult content"/>
-      <Choice value="Weapons" />
-      <Choice value="Violence" />
+      <Choice value="Choice 1" alias="A1" />
+      <Choice value="Choice 10" alias="A10" />
+      <Choice value="Choice 11" alias="A11" />
+      <Choice value="Choice 12" alias="A12" />
+      <Choice value="Choice 13" alias="A13" />
+      <Choice value="Choice 14" alias="A14" />
+      <Choice value="Choice 15" alias="A15" />
+      <Choice value="Choice 16" alias="A16" />
+      <Choice value="Choice 17" alias="A17" />
+      <Choice value="Choice 18" alias="A18" />
+      <Choice value="Choice 19" alias="A19" />
+      <Choice value="Choice 2" alias="A2" />
+      <Choice value="Choice 20" alias="A20" />
+      <Choice value="Choice 3" alias="A3" />
+      <Choice value="Choice 4" alias="A4" />
+      <Choice value="Choice 5" alias="A5" />
+      <Choice value="Choice 6" alias="A6" />
+      <Choice value="Choice 7" alias="A7" />
+      <Choice value="Choice 8" alias="A8" />
+      <Choice value="Choice 9" alias="A9" />
     </Choices>
   </View>
 

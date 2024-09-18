@@ -22,17 +22,18 @@ const style = {
 };
 
 // Check if user is on trial
-const isTrialExpired = window.APP_SETTINGS.billing.checks.is_license_expired;
+//const isTrialExpired = window.APP_SETTINGS.billing.checks.is_license_expired;
 // Check the subscription period end date
-const subscriptionPeriodEnd = window.APP_SETTINGS.subscription.current_period_end;
+//const subscriptionPeriodEnd = window.APP_SETTINGS.subscription.current_period_end;
 // Check if user is self-serve
-const isSelfServe = isFF(FF_SELF_SERVE) && window.APP_SETTINGS.billing.enterprise;
+//const isSelfServe = isFF(FF_SELF_SERVE) && window.APP_SETTINGS.billing.enterprise;
 // Check if user is self-serve and has expired trial
-const isSelfServeExpiredTrial = isSelfServe && isTrialExpired && !subscriptionPeriodEnd;
+//const isSelfServeExpiredTrial = isSelfServe && isTrialExpired && !subscriptionPeriodEnd;
 // Check if user is self-serve and has expired subscription
-const isSelfServeExpiredSubscription = isSelfServe && subscriptionPeriodEnd && new Date(subscriptionPeriodEnd) < new Date();
+//const isSelfServeExpiredSubscription = isSelfServe && subscriptionPeriodEnd && new Date(subscriptionPeriodEnd) < new Date();
 // Check if user is self-serve and has expired trial or subscription
-const isSelfServeExpired = isSelfServeExpiredTrial || isSelfServeExpiredSubscription;
+//const isSelfServeExpired = isSelfServeExpiredTrial || isSelfServeExpiredSubscription;
+
 
 const WithDisabledTooltip = ({ children, ...props }) => {
   if (!props.disabled) {
@@ -108,8 +109,8 @@ export const instruments = {
       <Interface name="import">
         <WithDisabledTooltip
           title="You must upgrade your plan to import data"
-          disabled={isSelfServeExpired}>
-          <ImportButton disabled={isSelfServeExpired} size={size}>Import</ImportButton>
+          disabled={false}>
+          <ImportButton disabled={false} size={size}>Import</ImportButton>
         </WithDisabledTooltip>
       </Interface>
     );

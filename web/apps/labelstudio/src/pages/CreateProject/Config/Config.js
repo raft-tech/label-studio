@@ -36,6 +36,7 @@ const EmptyConfigPlaceholder = () => (
 
 const Label = ({ label, template, color }) => {
   const value = label.getAttribute("value");
+  const alias = label.getAttribute("alias");
 
   return (
     <li className={configClass.elem("label").mod({ choice: label.tagName === "Choice" })}>
@@ -47,7 +48,12 @@ const Label = ({ label, template, color }) => {
           onChange={e => template.changeLabel(label, { background: e.target.value })}
         />
       </label>
-      <span>{value}</span>
+      {alias && (
+        <span>{value} ({alias})</span>
+      )}
+      {!alias && (
+        <span>{value}</span>
+      )}
       <button
         type="button"
         className={configClass.elem("delete-label")}
@@ -64,16 +70,21 @@ const Label = ({ label, template, color }) => {
 };
 
 const ConfigureControl = ({ control, template }) => {
-  const refLabels = React.useRef();
+  const refLabelName = React.useRef();
+  const refAlias = React.useRef();
   const tagname = control.tagName;
 
   if (tagname !== "Choices" && !tagname.endsWith("Labels")) return null;
   const palette = Palette();
 
   const onAddLabels = () => {
-    if (!refLabels.current) return;
-    template.addLabels(control, refLabels.current.value);
-    refLabels.current.value = "";
+    if (!refLabelName.current.value) {
+      return;
+    }
+
+    template.addLabel(control, refLabelName.current.value, refAlias.current.value);
+    refLabelName.current.value = "";
+    refAlias.current.value = "";
   };
   const onKeyPress = e => {
     if (e.key === "Enter" && e.ctrlKey) {
@@ -86,8 +97,14 @@ const ConfigureControl = ({ control, template }) => {
     <div className={configClass.elem("labels")}>
       <form className={configClass.elem("add-labels")} action="">
         <h4>{tagname === "Choices" ? "Add choices" : "Add label names"}</h4>
-        <span>Use new line as a separator to add multiple labels</span>
-        <textarea name="labels" id="" cols="30" rows="5" ref={refLabels} onKeyPress={onKeyPress}></textarea>
+        <div>
+          <span className={configClass.elem("add-label-label")}>Label Name</span>
+          <span>Alias (optional)</span>
+        </div>
+        <div>
+          <input type="text" size="12" ref={refLabelName} onKeyPress={onKeyPress} className={configClass.elem("add-label-input")} />
+          <input type="text" size="12" ref={refAlias} onKeyPress={onKeyPress} />
+        </div>
         <input type="button" value="Add" onClick={onAddLabels} />
       </form>
       <div className={configClass.elem("current-labels")}>

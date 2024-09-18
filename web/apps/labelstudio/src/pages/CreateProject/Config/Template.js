@@ -65,7 +65,7 @@ export class Template {
             control.settings[item].control = $control;
             control.settings[item].object = $object;
           }
-          
+
           settings = { ...settings, ...control.settings };
         }
       });
@@ -87,24 +87,25 @@ export class Template {
     this.render();
   }
 
-  addLabels(control, labels) {
-    if (!labels) return;
-    if (!Array.isArray(labels)) {
-      labels = labels.split("\n").map(s => s.trim()).filter(Boolean);
-    }
-    if (!labels.length) return;
-
-    const existing = [...control.children].map(ch => ch.getAttribute("value"));
+  addLabel(control, label, alias) {
+    const existing = [...control.children].map(ch => ch.getAttribute("value") + '-' + ch.getAttribute("alias"));
     const isChoices = control.tagName === "Choices";
 
-    labels.forEach(label => {
-      if (existing.includes(label)) return;
-      existing.push(label);
-      const $label = this.$root.createElement(isChoices ? "Choice" : "Label");
-      $label.setAttribute("value", label);
-      if (!isChoices) $label.setAttribute("background", this.palette.next().value);
-      control.appendChild($label);
-    });
+    if (existing.includes(label + '-' + alias)) {
+      return;
+    }
+    existing.push(label + '-' + alias);
+    const $label = this.$root.createElement(isChoices ? "Choice" : "Label");
+
+    $label.setAttribute("value", label);
+    if (!isChoices) {
+      $label.setAttribute("background", this.palette.next().value);
+    }
+
+    if (alias) {
+      $label.setAttribute("alias", alias);
+    }
+    control.appendChild($label);
 
     this.render();
   }

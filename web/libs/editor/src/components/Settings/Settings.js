@@ -209,9 +209,10 @@ export default observer(({ store }) => {
 
     return availableTags.reduce((res, tagName) => {
       const tagType = store.annotationStore.names.get(tagName).type;
-      const settings = settingsScreens.find(({ tagName }) => tagName.toLowerCase() === tagType.toLowerCase());
-
-      if (settings) res.push(settings);
+      if (settingsScreens) {
+        const settings = settingsScreens.find(({tagName}) => tagName.toLowerCase() === tagType.toLowerCase());
+        if (settings) res.push(settings);
+      }
 
       return res;
     }, []);

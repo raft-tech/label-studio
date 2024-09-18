@@ -173,6 +173,12 @@ DATABASES = {'default': DATABASES_ALL.get(get_env('DJANGO_DB', 'default'))}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
+KF_API_URL = get_env('KF_API_URL')
+KF_USERNAME = get_env('KF_USERNAME')
+KF_PASSWORD = get_env('KF_PASSWORD')
+KSERVE_TLS_VERIFY = get_bool_env('KSERVE_TLS_VERIFY', False)
+KF_MODELS_API_URL = get_env('KF_MODELS_API_URL')
+
 if get_bool_env('GOOGLE_LOGGING_ENABLED', False):
     logging.info('Google Cloud Logging handler is enabled.')
     try:

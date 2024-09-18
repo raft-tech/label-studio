@@ -19,22 +19,38 @@ export const MachineLearningSettings = () => {
   const api = useAPI();
   const { project, fetchProject } = useContext(ProjectContext);
   const [backends, setBackends] = useState([]);
+  const [models, setModels] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   const fetchBackends = useCallback(async () => {
     setLoading(true);
-    const models = await api.callApi('mlBackends', {
+    const backends = await api.callApi('mlBackends', {
       params: {
         project: project.id,
         include_static: true,
       },
     });
 
-    if (models) setBackends(models);
+    if (backends) setBackends(backends);
+
     setLoading(false);
     setLoaded(true);
-  }, [project, setBackends]);
+  }, [project, setBackends, setModels]);
+
+  const fetchAvailableModels = useCallback(async () => {
+    setLoading(true);
+    const models = await api.callApi('mlModels');
+
+    if (models) {
+      const formattedModels = models.map((m) => ({ 'label': m.metadata.name, 'value': m.metadata.name }));
+
+      setModels(formattedModels);
+    }
+
+    setLoading(false);
+    setLoaded(true);
+  }, [backends, models]);
 
   const startTrainingModal = useCallback(
     (backend) => {
@@ -65,16 +81,17 @@ export const MachineLearningSettings = () => {
   );
 
   const showMLFormModal = useCallback(
-    (backend) => {
+    (backend, models) => {
       const action = backend ? 'updateMLBackend' : 'addMLBackend';
       const modalProps = {
-        title: `${backend ? 'Edit' : 'Connect'} Model`,
+        title: `${backend ? 'Edit' : 'Connect'} Backend`,
         style: { width: 760 },
         closeOnClickOutside: false,
         body: (
           <CustomBackendForm
             action={action}
             backend={backend}
+            models={models}
             project={project}
             onSubmit={() => {
               fetchBackends();
@@ -95,6 +112,12 @@ export const MachineLearningSettings = () => {
     }
   }, [project.id]);
 
+  useEffect(() => {
+    if (project.id) {
+      fetchAvailableModels();
+    }
+  }, [project.id]);
+
   return (
     <Block name="ml-settings">
       <Elem name={'wrapper'}>
@@ -103,9 +126,9 @@ export const MachineLearningSettings = () => {
           <EmptyState
             icon={<IconEmptyPredictions />}
             title="Let’s connect your first model"
-            description="Connect a machine learning model to generate predictions. These predictions can be compared side by side, used for efficient pre‒labeling and, to aid in active learning, directing users to the most impactful labeling tasks."
+            description="Connect a machine learning backend and model to generate predictions. These predictions can be compared side by side, used for efficient pre‒labeling and, to aid in active learning, directing users to the most impactful labeling tasks."
             action={(
-              <Button primary onClick={() => showMLFormModal()}>
+              <Button primary onClick={() => showMLFormModal(undefined, models)}>
                 Connect Model
               </Button>
             )}
@@ -119,18 +142,19 @@ export const MachineLearningSettings = () => {
           />
         )}
         <MachineLearningList
-          onEdit={(backend) => showMLFormModal(backend)}
+          onEdit={(backend, models) => showMLFormModal(backend, models)}
           onTestRequest={(backend) => showRequestModal(backend)}
           onStartTraining={(backend) => startTrainingModal(backend)}
           fetchBackends={fetchBackends}
           backends={backends}
+          models={models}
         />
 
         <Divider height={32} />
 
         {backends.length > 0 && (
           <Description style={{ marginTop: 0, maxWidth: 680 }}>
-            A connected model has been detected! If you wish to fetch
+            A connected model has been detected! Yay! If you wish to fetch
             predictions from this model, please follow these steps:
             <br />
             <br />

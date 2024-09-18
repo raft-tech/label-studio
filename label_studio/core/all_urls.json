@@ -930,6 +930,12 @@
         "decorators": ""
     },
     {
+        "url": "/api/ml/models/",
+        "module": "ml.api.MLBackendModelsAPI",
+        "name": "ml:api:ml-models",
+        "decorators": ""
+    },
+    {
         "url": "/api/ml/<int:pk>",
         "module": "ml.api.MLBackendDetailAPI",
         "name": "ml:api:ml-detail",

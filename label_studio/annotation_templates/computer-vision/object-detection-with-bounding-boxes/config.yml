@@ -8,7 +8,11 @@ config: |
   <View>
     <Image name="image" value="$image"/>
     <RectangleLabels name="label" toName="image">
-      <Label value="Airplane" background="green"/>
-      <Label value="Car" background="blue"/>
+      <Label value="Label 0" alias="LABEL_0" background="orange"/>
+      <Label value="Label 1" alias="LABEL_1" background="red"/>
+      <Label value="Label 2" alias="LABEL_2" background="blue"/>
+      <Label value="Label 3" alias="LABEL_3" background="green"/>
+      <Label value="Label 4" alias="LABEL_4" background="yellow"/>
+      <Label value="Label 5" alias="LABEL_5" background="purple"/>
     </RectangleLabels>
   </View>

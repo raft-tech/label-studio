@@ -108,6 +108,7 @@ class MLBackendSerializer(serializers.ModelSerializer):
             'updated_at',
             'auto_update',
             'project',
+            'selected_model_name',
         ]
 
 

@@ -58,6 +58,7 @@ export const API_CONFIG = {
     deletePredictions: "DELETE:/projects/:pk/model-versions",
     modelVersions: "/ml/:pk/versions",
     mlInteractive: "POST:/ml/:pk/interactive-annotating",
+    mlModels: "GET:/ml/models",
 
     // Export
     export: "/projects/:pk/export",

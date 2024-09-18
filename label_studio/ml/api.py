@@ -1,6 +1,9 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 import logging
+import requests
+import re
+from urllib.parse import urlsplit
 
 import drf_yasg.openapi as openapi
 from core.feature_flags import flag_set
@@ -17,6 +20,7 @@ from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from core.settings.base import KF_API_URL, KF_USERNAME, KF_PASSWORD, KSERVE_TLS_VERIFY, KF_MODELS_API_URL
 
 logger = logging.getLogger(__name__)
 
@@ -353,3 +357,144 @@ class MLBackendVersionsAPI(generics.RetrieveAPIView):
             result = {'error': str(versions_response.error_message)}
             status_code = versions_response.status_code if versions_response.status_code > 0 else 500
             return Response(data=result, status=status_code)
+
+
+@method_decorator(
+    name='get',
+    decorator=swagger_auto_schema(
+        tags=['Machine Learning'],
+        operation_summary='Get available models',
+        operation_description='Get available models.',
+        responses={'200': 'List of available models.'},
+    ),
+)
+class MLBackendModelsAPI(generics.RetrieveAPIView):
+
+    permission_required = all_permissions.projects_change
+
+    def get(self, request, *args, **kwargs):
+        available_models_response = self.get_available_models()
+        if available_models_response.get('status') == 200:
+            result = available_models_response.get('inferenceServices', [])
+            return Response(data=result, status=200)
+        elif available_models_response.get('status') == 404:
+            return Response(data={}, status=404)
+        else:
+            result = {'error': str(available_models_response.error_message)}
+            status_code = available_models_response.status_code if available_models_response.status_code > 0 else 500
+            return Response(data=result, status=status_code)
+
+    def get_available_models(self):
+        auth_session = self.get_istio_auth_session(
+            url=KF_API_URL,
+            username=KF_USERNAME,
+            password=KF_PASSWORD,
+            tls_verify=KSERVE_TLS_VERIFY
+        )
+
+        # Create the cookies
+        assert ("session_cookie" in auth_session and auth_session["session_cookie"].startswith("authservice_session="))
+        cookie = auth_session["session_cookie"]
+
+        resp = requests.get(KF_MODELS_API_URL, headers={"Cookie": cookie})
+        return resp.json()
+
+    # --
+    # This function, get_istio_auth_session, was directly copy-pasted from Kubeflow's official website: https://www.kubeflow.org/docs/components/pipelines/v1/sdk/connect-api/
+    # --
+    def get_istio_auth_session(self, url: str, username: str, password: str, tls_verify: bool) -> dict:
+        """
+        Determine if the specified URL is secured by Dex and try to obtain a session cookie.
+        WARNING: only Dex `staticPasswords` and `LDAP` authentication are currently supported
+                 (we default default to using `staticPasswords` if both are enabled)
+
+        :param url: Kubeflow server URL, including protocol
+        :param username: Dex `staticPasswords` or `LDAP` username
+        :param password: Dex `staticPasswords` or `LDAP` password
+        :return: auth session information
+        """
+        # define the default return object
+        auth_session = {
+            "endpoint_url": url,  # KF endpoint URL
+            "redirect_url": None,  # KF redirect URL, if applicable
+            "dex_login_url": None,  # Dex login URL (for POST of credentials)
+            "is_secured": None,  # True if KF endpoint is secured
+            "session_cookie": None  # Resulting session cookies in the form "key1=value1; key2=value2"
+        }
+
+        # use a persistent session (for cookies)
+        with requests.Session() as s:
+
+            ################
+            # Determine if Endpoint is Secured
+            ################
+            resp = s.get(url, allow_redirects=True, verify=tls_verify)
+            if resp.status_code != 200:
+                raise RuntimeError(
+                    f"HTTP status code '{resp.status_code}' for GET against: {url}"
+                )
+
+            auth_session["redirect_url"] = resp.url
+
+            # if we were NOT redirected, then the endpoint is UNSECURED
+            if len(resp.history) == 0:
+                auth_session["is_secured"] = False
+                return auth_session
+            else:
+                auth_session["is_secured"] = True
+
+            ################
+            # Get Dex Login URL
+            ################
+            redirect_url_obj = urlsplit(auth_session["redirect_url"])
+
+            # if we are at `/auth?=xxxx` path, we need to select an auth type
+            if re.search(r"/auth$", redirect_url_obj.path):
+                #######
+                # TIP: choose the default auth type by including ONE of the following
+                #######
+
+                # OPTION 1: set "staticPasswords" as default auth type
+                redirect_url_obj = redirect_url_obj._replace(
+                    path=re.sub(r"/auth$", "/auth/local", redirect_url_obj.path)
+                )
+                # OPTION 2: set "ldap" as default auth type
+                # redirect_url_obj = redirect_url_obj._replace(
+                #     path=re.sub(r"/auth$", "/auth/ldap", redirect_url_obj.path)
+                # )
+
+            # if we are at `/auth/xxxx/login` path, then no further action is needed (we can use it for login POST)
+            if re.search(r"/auth/.*/login$", redirect_url_obj.path):
+                auth_session["dex_login_url"] = redirect_url_obj.geturl()
+
+            # else, we need to be redirected to the actual login page
+            else:
+                # this GET should redirect us to the `/auth/xxxx/login` path
+                resp = s.get(redirect_url_obj.geturl(), allow_redirects=True, verify=tls_verify)
+                if resp.status_code != 200:
+                    raise RuntimeError(
+                        f"HTTP status code '{resp.status_code}' for GET against: {redirect_url_obj.geturl()}"
+                    )
+
+                # set the login url
+                auth_session["dex_login_url"] = resp.url
+
+            ################
+            # Attempt Dex Login
+            ################
+            resp = s.post(
+                auth_session["dex_login_url"],
+                data={"login": username, "password": password},
+                allow_redirects=True,
+                verify=tls_verify
+            )
+            if len(resp.history) == 0:
+                raise RuntimeError(
+                    f"Login credentials were probably invalid - "
+                    f"No redirect after POST to: {auth_session['dex_login_url']}"
+                )
+
+            # store the session cookies in a "key1=value1; key2=value2" string
+            auth_session["session_cookie"] = "; ".join([f"{c.name}={c.value}" for c in s.cookies])
+
+        return auth_session

@@ -17,6 +17,7 @@ export const MachineLearningList = ({
   onEdit,
   onTestRequest,
   onStartTraining,
+  models,
 }) => {
   const api = useContext(ApiContext);
 
@@ -38,6 +39,7 @@ export const MachineLearningList = ({
         <BackendCard
           key={backend.id}
           backend={backend}
+          models={models}
           onStartTrain={onStartTraining}
           onDelete={onDeleteModel}
           onEdit={onEdit}
@@ -54,6 +56,7 @@ const BackendCard = ({
   onEdit,
   onDelete,
   onTestRequest,
+  models,
 }) => {
   const confirmDelete = useCallback(
     (backend) => {
@@ -92,7 +95,7 @@ const BackendCard = ({
                   Start Training
                 </Menu.Item>
 
-                <Menu.Item onClick={() => onEdit(backend)}>Edit</Menu.Item>
+                <Menu.Item onClick={() => onEdit(backend, models)}>Edit</Menu.Item>
                 <Menu.Item onClick={() => confirmDelete(backend)} isDangerous>
                   Delete
                 </Menu.Item>
