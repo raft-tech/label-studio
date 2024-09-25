@@ -571,6 +571,7 @@ class ExportStorage(Storage, ProjectStorageMixin):
                 self.info_set_queued()
                 export_sync_background(self.__class__, self.id)
             except Exception:
+                logging.exception("An error occurred syncing storage")
                 storage_background_failure(self)
 
     class Meta:

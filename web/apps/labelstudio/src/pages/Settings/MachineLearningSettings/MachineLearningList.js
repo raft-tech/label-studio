@@ -78,7 +78,7 @@ const BackendCard = ({
     <Block name="backend-card">
       <div className={rootClass.elem('title-container')}>
         <div>
-          <BackendState backend={backend} />
+          <BackendState backend={backend}/>
           <div className={rootClass.elem('title')}>
             <b>{backend.title}</b>
           </div>
@@ -104,8 +104,8 @@ const BackendCard = ({
           >
             <Button
               type="link"
-              icon={<LsEllipsis />}
-              style={{ padding: '15px' }}
+              icon={<LsEllipsis/>}
+              style={{padding: '15px'}}
             />
           </Dropdown.Trigger>
         </div>
@@ -122,16 +122,19 @@ const BackendCard = ({
           })}
         </div>
       </div>
+      <div className={rootClass.elem('title')}>
+        <b>{backend.selected_model_name}</b>
+      </div>
     </Block>
   );
 };
 
-const BackendState = ({ backend }) => {
-  const { state } = backend;
+const BackendState = ({backend}) => {
+  const {state} = backend;
 
   return (
     <div className={cn('ml').elem('status')}>
-      <span className={cn('ml').elem('indicator').mod({ state })}></span>
+      <span className={cn('ml').elem('indicator').mod({state})}></span>
       <Oneof value={state} className={cn('ml').elem('status-label')}>
         <span case="DI">Disconnected</span>
         <span case="CO">Connected</span>

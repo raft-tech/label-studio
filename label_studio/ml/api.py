@@ -20,7 +20,7 @@ from rest_framework import generics, status
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from core.settings.base import KF_API_URL, KF_USERNAME, KF_PASSWORD, KSERVE_TLS_VERIFY, KF_MODELS_API_URL
+from core.settings.base import KF_API_URL, KF_USERNAME, KF_PASSWORD, KF_TLS_VERIFY, KF_MODELS_API_URL
 
 logger = logging.getLogger(__name__)
 
@@ -389,7 +389,7 @@ class MLBackendModelsAPI(generics.RetrieveAPIView):
             url=KF_API_URL,
             username=KF_USERNAME,
             password=KF_PASSWORD,
-            tls_verify=KSERVE_TLS_VERIFY
+            tls_verify=KF_TLS_VERIFY
         )
 
         # Create the cookies

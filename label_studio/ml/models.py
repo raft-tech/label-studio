@@ -1,6 +1,8 @@
 """This file and its contents are licensed under the Apache License 2.0. Please see the included NOTICE for copyright information and LICENSE for a copy of the license.
 """
 import logging
+import json
+from urllib.parse import unquote
 
 from core.utils.common import conditional_atomic, db_is_not_sqlite, load_func, safe_float
 from django.conf import settings
@@ -224,6 +226,7 @@ class MLBackend(models.Model):
                     logger.debug(f'Changing model version: {self.model_version} -> {model_version}')
                     self.model_version = model_version
                 self.error_message = None
+
         self.save()
         return model_version
 

@@ -24,7 +24,6 @@ export const MachineLearningSettings = () => {
   const [loaded, setLoaded] = useState(false);
 
   const fetchBackends = useCallback(async () => {
-    setLoading(true);
     const backends = await api.callApi('mlBackends', {
       params: {
         project: project.id,
@@ -32,24 +31,20 @@ export const MachineLearningSettings = () => {
       },
     });
 
-    if (backends) setBackends(backends);
-
-    setLoading(false);
-    setLoaded(true);
+    if (backends) {
+      setBackends(backends);
+    }
   }, [project, setBackends, setModels]);
 
   const fetchAvailableModels = useCallback(async () => {
-    setLoading(true);
     const models = await api.callApi('mlModels');
 
     if (models) {
-      const formattedModels = models.map((m) => ({ 'label': m.metadata.name, 'value': m.metadata.name }));
+      //const formattedModels = models.map((m) => ({ 'label': m.metadata.name, 'value': m.metadata.name }));
+      const formattedModels = new Map(models.map((m) => [m.metadata.name, m]));
 
       setModels(formattedModels);
     }
-
-    setLoading(false);
-    setLoaded(true);
   }, [backends, models]);
 
   const startTrainingModal = useCallback(
@@ -108,13 +103,11 @@ export const MachineLearningSettings = () => {
 
   useEffect(() => {
     if (project.id) {
-      fetchBackends();
-    }
-  }, [project.id]);
-
-  useEffect(() => {
-    if (project.id) {
-      fetchAvailableModels();
+      setLoading(true);
+      fetchBackends().then(r => fetchAvailableModels().then(r => {
+        setLoading(false);
+        setLoaded(true);
+      }));
     }
   }, [project.id]);
 
@@ -141,21 +134,24 @@ export const MachineLearningSettings = () => {
             )}
           />
         )}
-        <MachineLearningList
-          onEdit={(backend, models) => showMLFormModal(backend, models)}
-          onTestRequest={(backend) => showRequestModal(backend)}
-          onStartTraining={(backend) => startTrainingModal(backend)}
-          fetchBackends={fetchBackends}
-          backends={backends}
-          models={models}
-        />
+
+        {loaded && (
+          <MachineLearningList
+            onEdit={(backend, models) => showMLFormModal(backend, models)}
+            onTestRequest={(backend) => showRequestModal(backend)}
+            onStartTraining={(backend) => startTrainingModal(backend)}
+            fetchBackends={fetchBackends}
+            backends={backends}
+            models={models}
+          />
+        )}
 
         <Divider height={32} />
 
         {backends.length > 0 && (
           <Description style={{ marginTop: 0, maxWidth: 680 }}>
-            A connected model has been detected! Yay! If you wish to fetch
-            predictions from this model, please follow these steps:
+            A connected backend has been detected! If you wish to fetch
+            predictions from the selected model, please follow these steps:
             <br />
             <br />
             1. Navigate to the <i>Data Manager</i>.<br />
@@ -201,10 +197,11 @@ export const MachineLearningSettings = () => {
             </Form.Actions>
           )}
         </Form>
+
       </Elem>
     </Block>
   );
 };
 
-MachineLearningSettings.title = 'Model';
+MachineLearningSettings.title = 'Backend and Model';
 MachineLearningSettings.path = '/ml';

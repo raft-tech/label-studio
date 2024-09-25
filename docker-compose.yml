@@ -42,11 +42,20 @@ services:
       - POSTGRE_HOST=db
       - LABEL_STUDIO_HOST=${LABEL_STUDIO_HOST:-}
       - JSON_LOG=1
+
+      # required to retrieve data from models-web-app
       - KF_API_URL=${KF_API_URL}
       - KF_USERNAME=${KF_USERNAME}
       - KF_PASSWORD=${KF_PASSWORD}
-      - KSERVE_TLS_VERIFY=${KSERVE_TLS_VERIFY}
+      - KF_TLS_VERIFY=${KF_TLS_VERIFY}
       - KF_MODELS_API_URL=${KF_MODELS_API_URL}
+
+      # required to send model endpoint data to ml backend
+      - KSERVE_API_URL_PREFIX=${KSERVE_API_URL_PREFIX}
+      - KF_NAMESPACE=${KF_NAMESPACE}
+      - KSERVE_HOST_SUFFIX=${KSERVE_HOST_SUFFIX}
+      - KSERVE_TLS_VERIFY=${KSERVE_TLS_VERIFY}
+
     #      - LOG_LEVEL=DEBUG
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/docker/volumes/label-studio:/label-studio/data:rw

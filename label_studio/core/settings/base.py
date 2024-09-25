@@ -176,8 +176,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 KF_API_URL = get_env('KF_API_URL')
 KF_USERNAME = get_env('KF_USERNAME')
 KF_PASSWORD = get_env('KF_PASSWORD')
-KSERVE_TLS_VERIFY = get_bool_env('KSERVE_TLS_VERIFY', False)
+KF_TLS_VERIFY = get_bool_env('KF_TLS_VERIFY', False)
 KF_MODELS_API_URL = get_env('KF_MODELS_API_URL')
+
+KSERVE_API_URL_PREFIX = get_env('KSERVE_API_URL_PREFIX')
+KF_NAMESPACE = get_env('KF_NAMESPACE')
+KSERVE_HOST_SUFFIX = get_env('KSERVE_HOST_SUFFIX')
+KSERVE_TLS_VERIFY = get_bool_env('KSERVE_TLS_VERIFY', False)
 
 if get_bool_env('GOOGLE_LOGGING_ENABLED', False):
     logging.info('Google Cloud Logging handler is enabled.')

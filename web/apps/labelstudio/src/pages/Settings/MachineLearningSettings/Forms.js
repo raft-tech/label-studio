@@ -12,9 +12,26 @@ import {
 import './MachineLearningSettings.styl';
 
 const CustomBackendForm = ({ action, backend, models, project, onSubmit }) => {
+
+  /**
+   * Sets selected model name from existing backend
+   * OR if there is no existing backend, use the first model in the map
+   * OR '' if there is no existing backend AND there are no models available
+   */
+  const getInitialSelectedModelNameState = (backend, models) => {
+    if (backend) {
+      return backend['selected_model_name'];
+    } else if (Array.from(models).length > 0) {
+      return Array.from(models)[0][0];
+    } else {
+      return '';
+    }
+  };
+
   const [selectedAuthMethod, setAuthMethod] = useState('');
-  const [, setModel] = useState('');
+  const [selectedModelName, setSelectedModelName] = useState(getInitialSelectedModelNameState(backend, models));
   const [, setMLError] = useState();
+
 
   return (
     <Form
@@ -41,9 +58,9 @@ const CustomBackendForm = ({ action, backend, models, project, onSubmit }) => {
         <Select
           name="selected_model_name"
           label="Select an available model"
-          options={models}
+          options={Array.from(models).map((m) => ({ 'label':m[0], 'value': m[1].metadata.name }))}
           onChange={(e) => {
-            setModel(e.target.value);
+            setSelectedModelName(e.target.value);
           }}
         />
       </Form.Row>

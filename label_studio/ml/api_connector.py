@@ -3,6 +3,7 @@
 import logging
 import os
 import urllib
+import json
 
 import requests
 from core.feature_flags import flag_set
@@ -14,8 +15,10 @@ from django.contrib.auth.models import AnonymousUser
 from django.db.models import Count
 from requests.adapters import HTTPAdapter
 from requests.auth import HTTPBasicAuth
+from urllib.parse import urlparse
 
 from label_studio.core.utils.params import get_env
+from core.settings.base import KSERVE_API_URL_PREFIX, KSERVE_TLS_VERIFY, KSERVE_HOST_SUFFIX, KF_NAMESPACE
 
 version = get_git_version()
 logger = logging.getLogger(__name__)
@@ -43,6 +46,10 @@ DELETE_URL = 'delete'
 JOB_STATUS_URL = 'job_status'
 VERSIONS_URL = 'versions'
 
+def strip_scheme(url):
+    parsed = urlparse(url)
+    scheme = "%s://" % parsed.scheme
+    return parsed.geturl().replace(scheme, '', 1)
 
 class BaseHTTPAPI(object):
     MAX_RETRIES = 2
@@ -211,6 +218,17 @@ class MLApi(BaseHTTPAPI):
             return self._request('train', request, verbose=False, timeout=TIMEOUT_PREDICT)
 
     def _prep_prediction_req(self, tasks, project, ml_backend, context=None):
+        kserve_api_url = f"{KSERVE_API_URL_PREFIX}/{ml_backend.selected_model_name}:predict"
+        kserve_host_value = f"{ml_backend.selected_model_name}.{KF_NAMESPACE}.{KSERVE_HOST_SUFFIX}"
+
+        model_config = {
+            'model_name': ml_backend.selected_model_name,
+            'kserve_api_url': kserve_api_url,
+            'kserve_host_value': kserve_host_value,
+            'kserve_tls_verify': KSERVE_TLS_VERIFY,
+            'from_name': list(project.parsed_label_config.keys())[0], # TODO: this blows up if there is no label config
+        }
+
         request = {
             'tasks': tasks,
             'project': self._create_project_uid(project),
@@ -218,9 +236,7 @@ class MLApi(BaseHTTPAPI):
             'params': {
                 'login': project.task_data_login,
                 'password': project.task_data_password,
-                'model_name': ml_backend.selected_model_name,
-                'from_name': list(project.parsed_label_config.keys())[0],
-                #'to_name': project.parsed_label_config.get(list(project.parsed_label_config.keys())[0])['to_name'],
+                'model_config': model_config,
                 'context': context,
             },
         }
